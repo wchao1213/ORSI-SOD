@@ -63,7 +63,7 @@ FIND_LR = False #True
 
 
 def train(Dataset, Network):
-    cfg    = Dataset.Config(channel=32,datapath='/home/wangchao/data/wchao_train', savepath=SAVE_PATH, mode='train', batch=15, lr=1e-4, momen=0.9, decay=5e-4, epoch=5000000)#0.05
+    cfg    = Dataset.Config(channel=32,datapath='/data/wchao_train', savepath=SAVE_PATH, mode='train', batch=15, lr=1e-4, momen=0.9, decay=5e-4, epoch=100)#0.05
    
     data   = Dataset.Data(cfg)
     loader = DataLoader(data, batch_size=cfg.batch, shuffle=True, num_workers=8)#new add
@@ -142,7 +142,7 @@ def train(Dataset, Network):
                 logger.info(msg)
             image, mask, bg,edge = prefetcher.next()
 
-        if (epoch+1)>= 500 and (epoch+1)==cfg.epoch:
+        if (epoch+1)<= 100 and (epoch+1)==cfg.epoch:
             torch.save(net.state_dict(), cfg.savepath+'/model-'+str(epoch+1))
 
 
