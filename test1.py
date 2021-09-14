@@ -161,8 +161,8 @@ opt = parser.parse_args()
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
-dataset_path = '/home/wangchao/data/wchao_test/total/'#'/home/ahu412/guoyin/eorssd/' #'/home/lizhun/data/wchao/dataset/' '/DATA/wangchao/EORSSD/'#
-test_datasets = ['all/']#['all/']#
+dataset_path = '/test/total/'
+test_datasets = ['all/']
 
 
 j=1
@@ -179,12 +179,8 @@ while(j<=1):
             
             save_pre = './results_vgg_ors/test_'+str(j)+'/'
             
-            save_path1 = './results/edge/test_'+str(j)+'/'
-            
             print('j=',j,'is_ResNet:',save_path1)
 
-            
-            #print('imageroot')
             image_root = dataset_path + dataset + '/images/'
             gt_root = dataset_path + dataset + '/gt/'
             edge_root = dataset_path + dataset + '/gt/'
@@ -208,7 +204,7 @@ while(j<=1):
               
                 cv2.imwrite(save_pre+name, res*255)
 
-            gtDir = '/home/wangchao/data/wchao_test/total/all/gt/'
+            gtDir = '/test/total/all/gt/'
             mae = MAE_Value(save_pre, gtDir)
             pr = PR_Curve(save_pre, gtDir)
             FMeasureF = pr['curScore']
