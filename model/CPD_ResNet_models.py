@@ -165,32 +165,26 @@ class JRBM_ResNet(nn.Module):
 
         x = self.resnet.conv1(x)
         x = self.resnet.bn1(x)
-        x = self.resnet.relu(x)  #64*160*160
+        x = self.resnet.relu(x)  
         x_get_b = x
         
-        x = self.resnet.maxpool(x)  #64*80*80
-        x1 = self.resnet.layer1(x)  # 256 x 80 x 80
+        x = self.resnet.maxpool(x)  
+        x1 = self.resnet.layer1(x)  
         x1_1 = x1
-        x2 = self.resnet.layer2(x1)  # 512 x 40 x 40
+        x2 = self.resnet.layer2(x1)  
 
         x2_1 = x2
-        x3_1 = self.resnet.layer3_1(x2_1)  # 1024 x 20 x 20
-        x4_1 = self.resnet.layer4_1(x3_1)  # 2048 x 10 x 10
+        x3_1 = self.resnet.layer3_1(x2_1)  
+        x4_1 = self.resnet.layer4_1(x3_1)  
 
-        # x3_1 = self.tran3_1(x3_1)
-        # x4_1 = self.tran4_1(x4_1)
+        x_glob = self.glob(self.tran4_1(x4_1))        
 
-        x_glob = self.glob(self.tran4_1(x4_1))        #out_channel=512
-
-        #print(self.upsample8(x_glob).shape,x2.shape)
-        x_edge = self.glob_vgg2(torch.cat((self.upsample2(self.upsample8(x_glob)),x_get_b),1))   #out_channel=channel
+        x_edge = self.glob_vgg2(torch.cat((self.upsample2(self.upsample8(x_glob)),x_get_b),1))   
 
 
         x2_1 = self.ham2_1(x2_1)
         x3_1 = self.ham3_1(x3_1)
         x4_1 = self.ham4_1(x4_1)
-        #print(x_edge.shape, x4_1.shape,x3_1.shape,x2_1.shape)
-        #torch.Size([12, 32, 160, 160]) torch.Size([12, 32, 20, 20]) torch.Size([12, 32, 40, 40]) torch.Size([12, 32, 80, 80])
 
         x4_1 = self.bgm4_1(x_edge, self.upsample2(x4_1))
         x3_1 = self.bgm3_1(x_edge, self.upsample2(x3_1))
@@ -212,7 +206,6 @@ class JRBM_ResNet(nn.Module):
         x3_2 = self.bgm3_2(x_edge,self.upsample2(x3_2))
         x2_2 = self.bgm2_2(x_edge,self.upsample2(x2_2))
         detection_map = self.agg2(x4_2, x3_2, x2_2)
-        #print(attention_map.shape, x_edge_pre.shape, detection_map.shape)
 
         return self.upsample4(attention_map),self.upsample2(x_edge_pre), self.upsample8(detection_map)#return self.upsample(attention_map), self.upsample(detection_map)
 
